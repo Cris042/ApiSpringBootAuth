@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bezkoder.spring.security.modules.login.models.Role;
-import com.bezkoder.spring.security.modules.login.models.ERole;
 import com.bezkoder.spring.security.modules.login.models.User;
 
 import com.bezkoder.spring.security.modules.login.payload.request.SignupRequest;
@@ -121,74 +120,8 @@ public class UserController
   
       if ( !strRoles.isEmpty() ) 
       {
-        strRoles.forEach(role -> 
-        {
-            switch (role) 
-            {
-                case "root":  
-                Role root = new Role(ERole.ROLE_ROOT);
-                roles.add( root );
-                break;
-
-                case "adminEvent":  
-                Role adminEvent = new Role(ERole.ROLE_EVENT_ADMIN);
-                roles.add(adminEvent);
-                break;
-
-                case "modEvent":
-                Role modEvent = new Role(ERole.ROLE_EVENT_MOD);
-                roles.add(modEvent);
-                break;
-                
-                case "userEvent":
-                Role userEvent = new Role(ERole.ROLE_EVENT_USER);
-                roles.add(userEvent);
-                break;
-                
-                case "adminLost":  
-                Role adminLost = new Role(ERole.ROLE_LOST_ADMIN);
-                roles.add(adminLost);
-                break;
-
-                case "modLost":
-                Role modLost = new Role(ERole.ROLE_LOST_MOD);
-                roles.add(modLost);
-                break;
-                
-                case "userLost":
-                Role userLost = new Role(ERole.ROLE_LOST_USER);
-                roles.add(userLost);
-                break;
-                
-                case "adminRide":  
-                Role adminRide = new Role(ERole.ROLE_RIDE_ADMIN);
-                roles.add(adminRide);
-                break;
-
-                case "modRide":
-                Role modRide = new Role(ERole.ROLE_RIDE_MOD);
-                roles.add(modRide);
-                break;
-                
-                case "userRide":
-                Role userRide = new Role(ERole.ROLE_RIDE_USER);
-                roles.add(userRide);
-                break;
-                
-                
-                default: 
-                Role userDefaltEvent = new Role(ERole.ROLE_EVENT_USER);
-                Role userDefaltLost = new Role(ERole.ROLE_LOST_USER);
-                Role userDefaltRide = new Role(ERole.ROLE_RIDE_USER);     
-
-                roles.add(userDefaltEvent); 
-                roles.add(userDefaltLost); 
-                roles.add(userDefaltRide);   
-            }
-        });
-
-        userObj.setRoles( roles );
-        
+         roles = userService.roleUser(strRoles);    
+         userObj.setRoles( roles );
       }  
       else 
       {
@@ -206,24 +139,10 @@ public class UserController
 
   }
 
-  @GetMapping("/user")
-  @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-  public String userAccess() 
-  {
-      return "User Content.";
-  }
-
-  @GetMapping("/mod")
-  @PreAuthorize("hasRole('MODERATOR')")
-  public String moderatorAccess() 
-  {
-      return "Moderator Board.";
-  }
-
-  @GetMapping("/admin")
-  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/root")
+  @PreAuthorize("hasRole('ROOT')")
   public String adminAccess()
   {
-      return "Admin Board.";
+      return "Root Board.";
   }
 }
