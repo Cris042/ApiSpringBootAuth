@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService 
@@ -59,6 +60,11 @@ public class UserService
     {
         List<User> allUser = userRepository.findAll();
         userRepository.deleteAll( allUser);
+    }
+
+    public Set<String> getRoles( Set<String> roles )
+    {
+        return roles;
     }
 
 }

@@ -54,14 +54,14 @@ public class UserController
   UserRepository userRepository;
   
   @GetMapping("/all")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<List<User>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable)
   {
       return ResponseEntity.status(HttpStatus.OK).body(  userService.findAll() );
   }
 
   @DeleteMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<Object> deletUser(@PathVariable(value = "id") long id)
   {
       Optional<User> user = userService.findById( id );
@@ -77,7 +77,7 @@ public class UserController
   }
 
   @DeleteMapping("/all")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<Object> deletAllUsers()
   {
       List<User> user = userService.findAll();
@@ -88,7 +88,7 @@ public class UserController
 
 
   @GetMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<Object> getUserById(@PathVariable(value = "id") long id)
   {
       Optional<User> user = userService.findById( id );
@@ -102,7 +102,7 @@ public class UserController
   }
 
   @PutMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<Object> registerUser(@PathVariable(value = "id") long id, @Valid @RequestBody SignupRequest signUpRequest) 
   {
       Optional<User> user = userService.findById( id );
@@ -121,31 +121,75 @@ public class UserController
   
       if ( !strRoles.isEmpty() ) 
       {
-          strRoles.forEach(role -> 
-          {
+        strRoles.forEach(role -> 
+        {
             switch (role) 
             {
-                case "admin":
-                  Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                      .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                  roles.add(adminRole);   
-                  break;
+                case "root":  
+                Role root = new Role(ERole.ROLE_ROOT);
+                roles.add( root );
+                break;
 
-                case "mod":
-                  Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                      .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                  roles.add(modRole);
-                  break;
-                  
-                default:
-                  Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                      .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                  roles.add(userRole);
+                case "adminEvent":  
+                Role adminEvent = new Role(ERole.ROLE_EVENT_ADMIN);
+                roles.add(adminEvent);
+                break;
+
+                case "modEvent":
+                Role modEvent = new Role(ERole.ROLE_EVENT_MOD);
+                roles.add(modEvent);
+                break;
+                
+                case "userEvent":
+                Role userEvent = new Role(ERole.ROLE_EVENT_USER);
+                roles.add(userEvent);
+                break;
+                
+                case "adminLost":  
+                Role adminLost = new Role(ERole.ROLE_LOST_ADMIN);
+                roles.add(adminLost);
+                break;
+
+                case "modLost":
+                Role modLost = new Role(ERole.ROLE_LOST_MOD);
+                roles.add(modLost);
+                break;
+                
+                case "userLost":
+                Role userLost = new Role(ERole.ROLE_LOST_USER);
+                roles.add(userLost);
+                break;
+                
+                case "adminRide":  
+                Role adminRide = new Role(ERole.ROLE_RIDE_ADMIN);
+                roles.add(adminRide);
+                break;
+
+                case "modRide":
+                Role modRide = new Role(ERole.ROLE_RIDE_MOD);
+                roles.add(modRide);
+                break;
+                
+                case "userRide":
+                Role userRide = new Role(ERole.ROLE_RIDE_USER);
+                roles.add(userRide);
+                break;
+                
+                
+                default: 
+                Role userDefaltEvent = new Role(ERole.ROLE_EVENT_USER);
+                Role userDefaltLost = new Role(ERole.ROLE_LOST_USER);
+                Role userDefaltRide = new Role(ERole.ROLE_RIDE_USER);     
+
+                roles.add(userDefaltEvent); 
+                roles.add(userDefaltLost); 
+                roles.add(userDefaltRide);   
             }
-          });
+        });
 
-          userObj.setRoles( roles );
-      } 
+        userObj.setRoles( roles );
+        
+      }  
       else 
       {
          userObj.setRoles( user.get().getRoles() );

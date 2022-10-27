@@ -103,9 +103,13 @@ public class AuthController
 
       if (strRoles == null) 
       {
-        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        roles.add(userRole);
+          Role userEvent = new Role(ERole.ROLE_EVENT_USER);
+          Role userLost = new Role(ERole.ROLE_LOST_USER);
+          Role userRide = new Role(ERole.ROLE_RIDE_USER);
+
+          roles.add(userEvent); 
+          roles.add(userLost); 
+          roles.add(userRide);   
       } 
       else 
       {
@@ -113,22 +117,65 @@ public class AuthController
         {
           switch (role) 
           {
-            case "admin":
-              Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                  .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-              roles.add(adminRole);
+            case "root":  
+              Role root = new Role(ERole.ROLE_ROOT);
+              roles.add( root );
               break;
 
-            case "mod":
-              Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                  .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-              roles.add(modRole);
+            case "adminEvent":  
+              Role adminEvent = new Role(ERole.ROLE_EVENT_ADMIN);
+              roles.add(adminEvent);
+              break;
+
+            case "modEvent":
+              Role modEvent = new Role(ERole.ROLE_EVENT_MOD);
+              roles.add(modEvent);
               break;
             
-            default:
-              Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                  .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-              roles.add(userRole);
+            case "userEvent":
+              Role userEvent = new Role(ERole.ROLE_EVENT_USER);
+              roles.add(userEvent);
+              break;
+            
+            case "adminLost":  
+              Role adminLost = new Role(ERole.ROLE_LOST_ADMIN);
+              roles.add(adminLost);
+              break;
+
+            case "modLost":
+              Role modLost = new Role(ERole.ROLE_LOST_MOD);
+              roles.add(modLost);
+              break;
+            
+            case "userLost":
+              Role userLost = new Role(ERole.ROLE_LOST_USER);
+              roles.add(userLost);
+              break;
+            
+            case "adminRide":  
+              Role adminRide = new Role(ERole.ROLE_RIDE_ADMIN);
+              roles.add(adminRide);
+              break;
+
+            case "modRide":
+              Role modRide = new Role(ERole.ROLE_RIDE_MOD);
+              roles.add(modRide);
+              break;
+            
+            case "userRide":
+              Role userRide = new Role(ERole.ROLE_RIDE_USER);
+              roles.add(userRide);
+              break;
+            
+             
+            default: 
+              Role userDefaltEvent = new Role(ERole.ROLE_EVENT_USER);
+              Role userDefaltLost = new Role(ERole.ROLE_LOST_USER);
+              Role userDefaltRide = new Role(ERole.ROLE_RIDE_USER);     
+
+              roles.add(userDefaltEvent); 
+              roles.add(userDefaltLost); 
+              roles.add(userDefaltRide);   
           }
         });
     }
@@ -136,7 +183,7 @@ public class AuthController
     user.setRoles(roles);
     userService.save(user);
 
-    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    return ResponseEntity.ok( user );
   }
 
   @PostMapping("/signout")
