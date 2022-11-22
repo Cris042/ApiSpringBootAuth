@@ -56,7 +56,7 @@ public class UserController
   @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<List<User>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable)
   {
-      return ResponseEntity.status(HttpStatus.OK).body(  userService.findAll() );
+      return ResponseEntity.status(HttpStatus.OK).body( userService.findAll() );
   }
 
   @DeleteMapping("/{id}")
